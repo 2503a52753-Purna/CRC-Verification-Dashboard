@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRC Verification & Attendance File Auditor Dashboard</title>
+  <meta name="description" content="Interactive Cyclic Redundancy Check (CRC) bitwise polynomial verification engine & attendance record audit suite." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-icon">🛡️</div>
+        <div class="logo-text">
+          <h2>CRC Engine</h2>
+          <span>Integrity Suite</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <label class="section-label">⚙️ STEP 1: CRC STANDARD</label>
+        <div class="select-wrapper">
+          <select id="crcStandardSelect" aria-label="Select CRC Standard">
+            <option value="CRC-3">CRC-3 (3-bit)</option>
+            <option value="CRC-4">CRC-4 (4-bit)</option>
+            <option value="CRC-8" selected>CRC-8 (8-bit)</option>
+            <option value="CRC-32">CRC-32 (32-bit IEEE)</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="generatorInput">Generator Polynomial (Binary 'gen'):</label>
+          <input type="text" id="generatorInput" value="100000111" spellcheck="false" autocomplete="off" />
+          <span class="input-hint" id="genValidationHint">Binary divisor string</span>
+        </div>
+
+        <div class="spec-card" id="polySpecs">
+          <div class="spec-row">
+            <span>Standard:</span>
+            <strong id="specStandard">CRC-8</strong>
+          </div>
+          <div class="spec-row">
+            <span>Generator Length:</span>
+            <strong id="specGenLen">9 bits</strong>
+          </div>
+          <div class="spec-row">
+            <span>CRC Length (len-1):</span>
+            <strong id="specCrcLen" class="accent-text">8 bits</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <label class="section-label">📋 STEP 2: INPUT MODE</label>
+        <div class="nav-tabs">
+          <button class="nav-tab active" id="tabMode1" data-mode="1">
+            <span class="tab-num">1</span>
+            <span class="tab-label">Binary Input (Codeword)</span>
+          </button>
+          <button class="nav-tab" id="tabMode2" data-mode="2">
+            <span class="tab-num">2</span>
+            <span class="tab-label">Text Input (CRC Match)</span>
+          </button>
+          <button class="nav-tab" id="tabMode3" data-mode="3">
+            <span class="tab-num">3</span>
+            <span class="tab-label">File Input (CSV Audit)</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="rule-badge">
+          <span class="rule-icon">⚖️</span>
+          <div class="rule-text">
+            <strong>Authentic Testing Rule</strong>
+            <p>No synthetic bit-flipping. Evaluates true inputs and files directly.</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Hero Banner -->
+      <header class="hero-banner">
+        <div class="hero-badge">PERMANENT HIGH-AVAILABILITY CLOUD DEPLOYMENT</div>
+        <h1 class="hero-title">Cyclic Redundancy Check (CRC) Dashboard</h1>
+        <p class="hero-subtitle">
+          Bitwise polynomial verification engine & attendance record audit suite.
+          Strictly implements pure modulo-2 binary division without external libraries or flipping.
+        </p>
+      </header>
+
+      <!-- VIEW 1: MODE 1 (BINARY INPUT) -->
+      <section class="mode-view active" id="viewMode1">
+        <div class="view-header">
+          <h2>Mode 1: Binary Input (Codeword Verification)</h2>
+          <p>Sender pads data with zeros and transmits codeword. Receiver computes modulo-2 remainder; zero confirms error-free transmission.</p>
+        </div>
+
+        <div class="two-column-grid">
+          <!-- Sender Column -->
+          <div class="panel-card">
+            <div class="card-header">
+              <span class="header-icon">📤</span>
+              <h3>Sender Side: Codeword Generation</h3>
+            </div>
+            <div class="card-body">
+              <div class="input-group">
+                <label for="m1SenderInput">Enter Binary Data String:</label>
+                <input type="text" id="m1SenderInput" value="100100" spellcheck="false" autocomplete="off" />
+                <span class="input-hint">Contains only '0' and '1'</span>
+              </div>
+
+              <div class="calc-box">
+                <label>Generator Divisor:</label>
+                <div class="pill-code" id="m1GenDisplay">100000111</div>
+              </div>
+
+              <div class="calc-box">
+                <label>Padded Data (data + zeros):</label>
+                <div class="pill-code" id="m1PaddedDisplay">10010000000000</div>
+              </div>
+
+              <div class="calc-box">
+                <label>Sender CRC Checksum:</label>
+                <div class="pill-code accent-amber" id="m1CrcDisplay">01001011</div>
+              </div>
+
+              <div class="calc-box">
+                <label>Transmitted Codeword (data + CRC):</label>
+                <div class="pill-code accent-cyan" id="m1CodewordDisplay">10010001001011</div>
+              </div>
+
+              <button class="btn btn-secondary" id="m1SyncBtn">
+                📋 Copy Codeword to Receiver
+              </button>
+            </div>
+          </div>
+
+          <!-- Receiver Column -->
+          <div class="panel-card">
+            <div class="card-header">
+              <span class="header-icon">📥</span>
+              <h3>Receiver Side: Remainder Verification</h3>
+            </div>
+            <div class="card-body">
+              <div class="input-group">
+                <label for="m1ReceiverInput">Enter Received Codeword:</label>
+                <input type="text" id="m1ReceiverInput" value="10010001001011" spellcheck="false" autocomplete="off" />
+                <span class="input-hint">Manually change any bit to test error detection</span>
+              </div>
+
+              <div class="calc-box">
+                <label>Modulo-2 Division Remainder:</label>
+                <div class="pill-code" id="m1RemainderDisplay">00000000</div>
+              </div>
+
+              <!-- Status Alert Box -->
+              <div class="status-banner success" id="m1StatusBanner">
+                <div class="status-title">
+                  <span class="status-icon">✔</span>
+                  <span id="m1StatusText">Status: No Error Detected</span>
+                </div>
+                <div class="status-detail" id="m1StatusDetail">
+                  The remainder is zero. Transmission was error-free.<br>
+                  <strong>Extracted Data:</strong> <code id="m1ExtractedData">100100</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: MODE 2 (TEXT INPUT) -->
+      <section class="mode-view" id="viewMode2">
+        <div class="view-header">
+          <h2>Mode 2: Text Input (CRC Value Comparison)</h2>
+          <p>Converts arbitrary ASCII text into 8-bit binary streams and computes standalone CRCs. Direct equality comparison verifies message integrity.</p>
+        </div>
+
+        <div class="two-column-grid">
+          <!-- Sender Column -->
+          <div class="panel-card">
+            <div class="card-header">
+              <span class="header-icon">📤</span>
+              <h3>Sender Side: Text Stream</h3>
+            </div>
+            <div class="card-body">
+              <div class="input-group">
+                <label for="m2SenderText">Enter Sender Text:</label>
+                <textarea id="m2SenderText" rows="3">Computer Networks CRC Verification Lab</textarea>
+              </div>
+
+              <div class="calc-box">
+                <label>Generator Divisor:</label>
+                <div class="pill-code" id="m2GenDisplay">100000111</div>
+              </div>
+
+              <div class="calc-box">
+                <label>Sender Binary Representation (<span id="m2SenderBits">0</span> bits):</label>
+                <div class="pill-code scrollable" id="m2SenderBinary">-</div>
+              </div>
+
+              <div class="calc-box">
+                <label>Sender CRC Checksum:</label>
+                <div class="pill-code accent-amber" id="m2SenderCrc">-</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Receiver Column -->
+          <div class="panel-card">
+            <div class="card-header">
+              <span class="header-icon">📥</span>
+              <h3>Receiver Side: Text Stream</h3>
+            </div>
+            <div class="card-body">
+              <div class="input-group">
+                <label for="m2ReceiverText">Enter Received Text:</label>
+                <textarea id="m2ReceiverText" rows="3">Computer Networks CRC Verification Lab</textarea>
+              </div>
+
+              <div class="calc-box">
+                <label>Receiver Binary Representation (<span id="m2ReceiverBits">0</span> bits):</label>
+                <div class="pill-code scrollable" id="m2ReceiverBinary">-</div>
+              </div>
+
+              <div class="calc-box">
+                <label>Receiver CRC Checksum:</label>
+                <div class="pill-code accent-amber" id="m2ReceiverCrc">-</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode 2 Verdict -->
+        <div class="status-banner success" id="m2StatusBanner">
+          <div class="status-title">
+            <span class="status-icon">✔</span>
+            <span id="m2StatusText">Status: No Error Detected (Sender CRC == Receiver CRC)</span>
+          </div>
+          <div class="status-detail" id="m2StatusDetail">
+            Both checksums match perfectly. The text message is completely authentic and unaltered.
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: MODE 3 (ATTENDANCE CSV AUDIT) -->
+      <section class="mode-view" id="viewMode3">
+        <div class="view-header">
+          <h2>Mode 3: File Input (Attendance Record Integrity Auditor)</h2>
+          <div class="case-study-quote">
+            <strong>💡 Classroom Scenario:</strong> An instructor generates a CSV attendance file. During storage or transfer, 
+            some attendance values or rows may be accidentally changed or deleted. 
+            CRC comparison audits the file to guarantee it remains identical to the original record.
+          </div>
+        </div>
+
+        <div class="two-column-grid">
+          <!-- Sender File Card -->
+          <div class="panel-card">
+            <div class="card-header">
+              <span class="header-icon">📤</span>
+              <h3>1. Sender Side (Original Reference Record)</h3>
+            </div>
+            <div class="card-body">
+              <div class="file-drop-area">
+                <input type="file" id="m3SenderFileInput" accept=".csv,.txt" />
+                <label for="m3SenderFileInput" class="file-drop-label">
+                  <span>📁 Upload Original CSV File</span>
+                  <small>or uses built-in pristine sample</small>
+                </label>
+              </div>
+              <div class="active-file-indicator">
+                Active: <strong id="m3SenderFileName">sample_attendance_original.csv</strong>
+              </div>
+
+              <div class="calc-box">
+                <label>Original Reference CRC Checksum:</label>
+                <div class="pill-code accent-amber" id="m3SenderCrc">-</div>
+              </div>
+
+              <div class="table-preview-box">
+                <label>File Table Preview:</label>
+                <div class="table-scroll-container" id="m3SenderTableContainer"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Receiver File Card -->
+          <div class="panel-card">
+            <div class="card-header">
+              <span class="header-icon">📥</span>
+              <h3>2. Receiver Side (File Under Audit)</h3>
+            </div>
+            <div class="card-body">
+              <label class="sub-label">Select Audit Test Source:</label>
+              <div class="scenario-radio-group">
+                <label class="radio-card">
+                  <input type="radio" name="m3Scenario" value="authentic" checked />
+                  <span>Test 1: Identical Record (Authentic)</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="m3Scenario" value="tampered" />
+                  <span>Test 2: Tampered Status ('Absent' &rarr; 'Present')</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="m3Scenario" value="deleted" />
+                  <span>Test 3: Missing Student Row (Row Deleted)</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="m3Scenario" value="custom" />
+                  <span>Test 4: Upload Custom Audited File</span>
+                </label>
+              </div>
+
+              <div class="file-drop-area" id="m3CustomUploadArea" style="display: none; margin-top: 10px;">
+                <input type="file" id="m3ReceiverFileInput" accept=".csv,.txt" />
+                <label for="m3ReceiverFileInput" class="file-drop-label">
+                  <span>📁 Upload File to Audit</span>
+                </label>
+              </div>
+
+              <div class="active-file-indicator">
+                Auditing: <strong id="m3ReceiverFileName">sample_attendance_original.csv</strong>
+              </div>
+
+              <div class="calc-box">
+                <label>Audited File CRC Checksum:</label>
+                <div class="pill-code accent-amber" id="m3ReceiverCrc">-</div>
+              </div>
+
+              <div class="table-preview-box">
+                <label>Audited File Table Preview:</label>
+                <div class="table-scroll-container" id="m3ReceiverTableContainer"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode 3 Verdict & Download -->
+        <div class="status-banner success" id="m3StatusBanner">
+          <div class="status-title">
+            <span class="status-icon">✔</span>
+            <span id="m3StatusText">Official Audit Result: PASS</span>
+          </div>
+          <div class="status-detail" id="m3StatusDetail">
+            The audited attendance record is 100% identical to the original instructor copy. No rows or values were altered.
+          </div>
+        </div>
+
+        <div class="action-footer">
+          <button class="btn btn-primary" id="m3DownloadBtn">
+            📥 Download Official Audit Report (CSV)
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
